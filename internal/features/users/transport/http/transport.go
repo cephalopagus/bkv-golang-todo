@@ -31,6 +31,11 @@ type UsersService interface {
 		ctx context.Context,
 		id int,
 	) error
+	PatchUser(
+		ctx context.Context,
+		id int,
+		patch domain.UserPatch,
+	) (domain.User, error)
 }
 
 func NewUserHTTPHandler(
