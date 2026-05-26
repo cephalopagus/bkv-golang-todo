@@ -1,4 +1,5 @@
 include .env
+export  
 
 
 env-up:
@@ -10,7 +11,7 @@ env-down:
 env-cleanup:
 	@read -p "This will remove all data in the environment. Are you sure? (y/n): " answer; \
 	if [ "$$answer" = "y" ]; then \
-		docker compose down && \
+		docker compose down todoapp-postgres port-forwarder && \
 		sudo rm -rf out/pgdata && \
 		echo "Environment cleaned up."; \
 	else \
@@ -50,3 +51,7 @@ migrate-action:
 		postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DB}?sslmode=disable \
 		"$(action)"
 
+run:
+	@export LOGGER_FOLDER=./out/logs && \
+	export POSTGRES_HOST=localhost && \
+	go run cmd/todoapp/main.go
