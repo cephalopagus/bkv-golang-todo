@@ -10,7 +10,6 @@ import (
 	core_http_request "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/request"
 	core_http_response "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/response"
 	core_http_types "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/types"
-	core_http_utils "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/utils"
 )
 
 type PatchUserRequest struct {
@@ -51,7 +50,7 @@ func (h *UserHTTPHandler) PatchUser(w http.ResponseWriter, r *http.Request) {
 	log := core_logger.FromContext(ctx)
 	responseHandler := core_http_response.NewHTTPResponseHandler(log, w)
 
-	userID, err := core_http_utils.GetIntPathValue(r, "id")
+	userID, err := core_http_request.GetIntPathValue(r, "id")
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get user id path value")
 		return
@@ -77,8 +76,8 @@ func (h *UserHTTPHandler) PatchUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func userPatchFromRequest(request PatchUserRequest) domain.UserPatch {
-	return domain.UserPatch{
-		FullName:    request.FullName.ToDomain(),
-		PhoneNumber: request.PhoneNumber.ToDomain(),
-	}
+	return domain.NewUserPatch(
+		request.FullName.ToDomain(),
+		request.PhoneNumber.ToDomain(),
+	)
 }

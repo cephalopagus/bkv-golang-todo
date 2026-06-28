@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	core_logger "github.com/cephalopagus/bkv-golang-todo/internal/core/logger"
+	core_http_request "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/request"
 	core_http_response "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/response"
-	core_http_utils "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/utils"
 )
 
 func (h *UserHTTPHandler) DeteleUser(w http.ResponseWriter, r *http.Request) {
@@ -13,7 +13,7 @@ func (h *UserHTTPHandler) DeteleUser(w http.ResponseWriter, r *http.Request) {
 	log := core_logger.FromContext(ctx)
 	responseHadler := core_http_response.NewHTTPResponseHandler(log, w)
 
-	userID, err := core_http_utils.GetIntPathValue(r, "id")
+	userID, err := core_http_request.GetIntPathValue(r, "id")
 	if err != nil {
 		responseHadler.ErrorResponse(err, "failed to get user id path value")
 		return
