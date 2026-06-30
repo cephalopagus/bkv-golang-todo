@@ -55,3 +55,13 @@ run:
 	@export LOGGER_FOLDER=./out/logs && \
 	export POSTGRES_HOST=localhost && \
 	go run cmd/todoapp/main.go
+
+
+logs_cleanup:
+	@read -p "This will remove all logs in the environment. Are you sure? (y/n): " answer; \
+	if [ "$$answer" = "y" ]; then \
+		sudo rm -rf out/logs && \
+		echo "Environment cleaned up."; \
+	else \
+		echo "Cleanup aborted."; \
+	fi
