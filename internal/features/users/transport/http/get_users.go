@@ -15,21 +15,21 @@ func (h *UserHTTPHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
 
-	responseHadler := core_http_response.NewHTTPResponseHandler(log, w)
+	responseHandler := core_http_response.NewHTTPResponseHandler(log, w)
 
 	limit, offset, err := getLimitOffSetQueryParams(r)
 	if err != nil {
-		responseHadler.ErrorResponse(err, "failed to get 'limit'/'offset' query param")
+		responseHandler.ErrorResponse(err, "failed to get 'limit'/'offset' query param")
 		return
 	}
 	userDomains, err := h.usersService.GetUsers(ctx, limit, offset)
 	if err != nil {
-		responseHadler.ErrorResponse(err, "failed to get users")
+		responseHandler.ErrorResponse(err, "failed to get users")
 		return
 	}
-	response := GetUsersResponse(usersDTOFromDomains(userDomains))
+	response := GetUsersResponse(usersDTOsFromDomains(userDomains))
 
-	responseHadler.JSONResponse(response, http.StatusOK)
+	responseHandler.JSONResponse(response, http.StatusOK)
 
 }
 

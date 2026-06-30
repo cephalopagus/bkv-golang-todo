@@ -34,7 +34,7 @@ func (r *UsersRepository) GetUser(
 	)
 	if err != nil {
 		if errors.Is(err, core_postgres_pool.ErrNoRows) {
-			return domain.User{}, fmt.Errorf("user witj id='%d': %w", id, core_errors.ErrNotFound)
+			return domain.User{}, fmt.Errorf("user with id='%d': %w", id, core_errors.ErrNotFound)
 		}
 		return domain.User{}, fmt.Errorf("scan users: %w", err)
 	}
