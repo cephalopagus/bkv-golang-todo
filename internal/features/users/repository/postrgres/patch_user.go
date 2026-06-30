@@ -17,7 +17,7 @@ func (r *UsersRepository) PatchUser(
 ) (domain.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout())
 	defer cancel()
-
+	//check
 	query := `
 	UPDATE todoapp.users
 	SET 
