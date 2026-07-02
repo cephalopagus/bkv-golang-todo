@@ -13,6 +13,9 @@ import (
 	core_pgx_pool "github.com/cephalopagus/bkv-golang-todo/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/middleware"
 	core_http_server "github.com/cephalopagus/bkv-golang-todo/internal/core/transport/http/server"
+	statistics_postgres_repository "github.com/cephalopagus/bkv-golang-todo/internal/features/statistics/repository/postgres"
+	statistics_service "github.com/cephalopagus/bkv-golang-todo/internal/features/statistics/service"
+	statistics_transport_http "github.com/cephalopagus/bkv-golang-todo/internal/features/statistics/transport/http"
 	tasks_postgres_repository "github.com/cephalopagus/bkv-golang-todo/internal/features/tasks/repository/postgres"
 	tasks_service "github.com/cephalopagus/bkv-golang-todo/internal/features/tasks/service"
 	tasks_transport_http "github.com/cephalopagus/bkv-golang-todo/internal/features/tasks/transport/http"
@@ -59,6 +62,12 @@ func main() {
 	taskService := tasks_service.NewTasksService(tasksRepository)
 	tasksTransport := tasks_transport_http.NewTaskHTTPHandler(taskService)
 
+	//
+	logger.Debug("initializing feature", zap.String("feature", "statistisc"))
+	statisticsRepository := statistics_postgres_repository.NewStatisticsRepository(pool)
+	statisticsService := statistics_service.NewStatisticsService(statisticsRepository)
+	statisticsTransport := statistics_transport_http.NewStatisticsHTTPHandler(statisticsService)
+
 	logger.Debug("initializing http server")
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(),
@@ -72,6 +81,7 @@ func main() {
 	apiVer := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
 	apiVer.RegisterRoutes(usersTransport.Routes()...)
 	apiVer.RegisterRoutes(tasksTransport.Route()...)
+	apiVer.RegisterRoutes(statisticsTransport.Route()...)
 
 	// apiVer2 := core_http_server.NewAPIVersionRouter(
 	// 	core_http_server.ApiVersion2,
